@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrailleTurtle - Traductor Avanzado a Braille</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <div class="ocean-background">
+        <div class="water-effect"></div>
+        <div class="bubbles"></div>
+        
+        <header class="main-header">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="turtle-logo animate__animated animate__pulse animate__infinite animate__slower">
+                        <div class="turtle-shell-logo">
+                            <div class="shell-pattern"></div>
+                        </div>
+                    </div>
+                    <h1>Braille<span>Turtle</span></h1>
+                </div>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#" class="active"><i class="fas fa-home"></i> Inicio</a></li>
+                        <li><a href="#"><i class="fas fa-info-circle"></i> Acerca</a></li>
+                        <li><a href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="app-container">
+            <div class="glass-panel">
+                <div class="input-section">
+                    <div class="input-tabs">
+                        <div class="tab active" data-tab="text">
+                            <i class="fas fa-keyboard"></i>
+                            <span>Texto</span>
+                        </div>
+                        <div class="tab" data-tab="upload">
+                            <i class="fas fa-file-upload"></i>
+                            <span>Documento</span>
+                        </div>
+                        <div class="tab" data-tab="camera">
+                            <i class="fas fa-camera"></i>
+                            <span>Cámara</span>
+                        </div>
+                        <div class="tab" data-tab="draw">
+                            <i class="fas fa-pen-fancy"></i>
+                            <span>Dibujar</span>
+                        </div>
+                    </div>
+
+                    <div class="tab-content active" id="text-tab">
+                        <div class="text-input-container">
+                            <textarea id="inputText" placeholder="Escribe o pega tu texto aquí..."></textarea>
+                            <div class="text-tools">
+                                <button class="tool-btn" id="pasteBtn"><i class="fas fa-paste"></i> Pegar</button>
+                                <button class="tool-btn" id="clearTextBtn"><i class="fas fa-eraser"></i> Limpiar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="upload-tab">
+                        <div class="upload-container">
+                            <div class="drop-zone" id="dropZone">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h3>Arrastra archivos aquí</h3>
+                                <p>o haz clic para seleccionar</p>
+                                <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.jpg,.png,.jpeg">
+                            </div>
+                            <div class="file-preview" id="filePreview">
+                                <div class="preview-placeholder">
+                                    <i class="fas fa-file-alt"></i>
+                                    <p>Vista previa del archivo aparecerá aquí</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="camera-tab">
+                        <div class="camera-container">
+                            <div class="camera-view">
+                                <video id="cameraPreview" autoplay playsinline></video>
+                                <canvas id="photoCanvas"></canvas>
+                                <div class="camera-overlay">
+                                    <div class="focus-circle"></div>
+                                </div>
+                            </div>
+                            <div class="camera-controls">
+                                <button id="startCameraBtn" class="camera-control-btn primary">
+                                    <i class="fas fa-camera"></i> Activar Cámara
+                                </button>
+                                <button id="captureBtn" class="camera-control-btn success hidden">
+                                    <i class="fas fa-camera-retro"></i> Capturar
+                                </button>
+                                <button id="retakeBtn" class="camera-control-btn warning hidden">
+                                    <i class="fas fa-redo"></i> Volver a Tomar
+                                </button>
+                                <button id="uploadPhotoBtn" class="camera-control-btn info hidden">
+                                    <i class="fas fa-cloud-upload-alt"></i> Subir Foto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="draw-tab">
+                        <div class="drawing-container">
+                            <div class="drawing-tools">
+                                <button class="draw-tool active" data-tool="pen"><i class="fas fa-pen"></i></button>
+                                <button class="draw-tool" data-tool="eraser"><i class="fas fa-eraser"></i></button>
+                                <input type="color" id="drawColor" value="#000000">
+                                <input type="range" id="brushSize" min="1" max="50" value="5">
+                                <button id="clearCanvasBtn"><i class="fas fa-trash"></i> Limpiar</button>
+                            </div>
+                            <canvas id="drawingCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="translateBtn" class="action-btn primary animate__animated animate__pulse">
+                        <i class="fas fa-language"></i> Traducir a Braille
+                    </button>
+                    <button id="speakBtn" class="action-btn secondary">
+                        <i class="fas fa-volume-up"></i> Leer en Voz Alta
+                    </button>
+                    <button id="downloadBtn" class="action-btn tertiary">
+                        <i class="fas fa-download"></i> Descargar Resultado
+                    </button>
+                </div>
+
+                <div class="output-section">
+                    <div class="output-header">
+                        <h3><i class="fas fa-braille"></i> Resultado en Braille</h3>
+                        <div class="output-tools">
+                            <button id="copyBtn" class="output-tool-btn">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                            <button id="savePresetBtn" class="output-tool-btn">
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
+                            <div class="braille-size-control">
+                                <button id="decreaseSizeBtn"><i class="fas fa-minus"></i></button>
+                                <span id="brailleSizeValue">24px</span>
+                                <button id="increaseSizeBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="braille-output" id="brailleOutput">
+                        <div class="empty-state">
+                            <i class="fas fa-braille"></i>
+                            <p>El texto traducido a Braille aparecerá aquí</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="turtle-animation-container">
+            <div class="turtle-swimmer">
+                <div class="turtle-body">
+                    <div class="head"></div>
+                    <div class="shell">
+                        <div class="shell-pattern"></div>
+                    </div>
+                    <div class="flipper front-left"></div>
+                    <div class="flipper front-right"></div>
+                    <div class="flipper back-left"></div>
+                    <div class="flipper back-right"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal OCR -->
+    <div class="modal" id="ocrModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-search"></i> Procesando Contenido</h3>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ocrProgress"></div>
+                        </div>
+                        <div class="progress-text" id="ocrStatus">Inicializando OCR...</div>
+                    </div>
+                    <div class="progress-details">
+                        <div class="detail-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span id="fileTypeInfo">Tipo: Desconocido</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span id="progressSpeed">Velocidad: --</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancelOcrBtn" class="modal-btn danger">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Configuración -->
+    <div class="modal" id="settingsModal">
+        <!-- Contenido de configuración -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
